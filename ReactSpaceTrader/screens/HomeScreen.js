@@ -9,35 +9,18 @@ import {
     View,
     Button,
 } from 'react-native';
+import AppNavigator from '../navigation/AppNavigator';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
-class StartLabel extends Component {
-    render() {
-        return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text> Space Trader </Text>
-                <Button
-                    title = "Start"
-                    onPress={() => {
-                        this.props.navigation.navigate('Start', {
-                            itemId: 86,
-                            //Not sure what to do here
-                            otherParam: 'Anything you want',
-                        });
-                    }}
-                />
-            </View>
-        );
-    }
-}
 
 
 export default class HomeScreen extends React.Component {
-    // static navigationOptions = {
-    //   header: null,
-    // };
+    static navigationOptions = ({ navigation }) => ({
+            header: null,
+        }
+    );
     //
     // constructor(props) {
     //     super(props);
@@ -49,8 +32,14 @@ export default class HomeScreen extends React.Component {
 
     render() {
         return (
-            <View style={{alignItems: 'center'}}>
-                <StartLabel/>
+            <View style={styles.container}>
+                <Text> Space Trader </Text>
+                <Button
+                    title = "Start"
+                    onPress={() => {
+                        this.props.navigation.navigate('PlayerGen');
+                    }}
+                />
             </View>
         );
     }
@@ -137,8 +126,10 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center'
   },
   developmentModeText: {
     marginBottom: 20,

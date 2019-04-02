@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 const styles = StyleSheet.create({
@@ -8,9 +8,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     }
-})
+});
 
-export default class StartScreen extends React.component {
+export default class StartScreen extends Component {
     render() {
         return (
             <View style = {styles.container}>
