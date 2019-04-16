@@ -70,7 +70,10 @@ class DifficultySelector extends Component {
                 <Picker
                     selectedValue={this.state.currency}
                     style={{ height: 50, width: 100 }}
-                    onValueChange={(itemValue, itemIndex) => this.setState({currency: itemValue})}>
+                    onValueChange={(itemValue, itemIndex) => {
+                        this.props.updateDifficulty(itemValue)
+                        this.setState({currency: itemValue})
+                    }}>
                     <Picker.Item label = "Easy" value = "Easy"/>
                     <Picker.Item label = "Medium" value = "Medium"/>
                     <Picker.Item label = "Hard" value = "Hard"/>
@@ -85,14 +88,15 @@ export default class PlayerGenScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            text: '',
+            text: "",
             total: 0,
             levels: {
                 pilot: 0,
                 fighter: 0,
                 trader: 0,
                 engineer: 0
-            }
+            },
+            difficulty: "Medium"
         };
     }
 
@@ -194,6 +198,12 @@ export default class PlayerGenScreen extends Component {
         return false;
     }
 
+    updateDifficulty(val) {
+        this.setState({
+            difficulty: val
+        })
+    }
+
     render() {
         return (
             <View style={style.container}>
@@ -211,12 +221,20 @@ export default class PlayerGenScreen extends Component {
                 <Button style={{justifyContent: 'flex-end',}}
                     title = "start"
                     onPress={() => {
-                        db.ref('/Skills').update({
-                            value: this.state.levels
-                          });
+                        if (this.state.total == 16 && this.state.text != "") {
+                            db.ref('/Skills').update({
+                                value: this.state.levels
+                              });
+                            db.ref('/Difficulty').update({
+                                value: this.state.difficulty
+                            })
+                            db.ref('/Player').update({
+                                name: this.state.text
+                            })
+                        }
                     }}
                 />
-                <DifficultySelector/>
+                <DifficultySelector updateDifficulty = {(a) => this.updateDifficulty(a)}/>
             </View>
         );
     }
