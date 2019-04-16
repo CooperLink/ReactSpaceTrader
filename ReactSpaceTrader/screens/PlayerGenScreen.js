@@ -11,6 +11,12 @@ import {
     TextInput,
     Picker
 } from 'react-native';
+import { db } from '../config';
+
+let engineerRef = db.ref('Engineer');
+let fighterRef = db.ref('Fighter');
+let pilotRef = db.ref('Pilot');
+let traderRef = db.ref('Trader');
 
 class SkillComponent extends Component {
     constructor(props){
@@ -25,14 +31,22 @@ class SkillComponent extends Component {
                 <Button style={{justifyContent: 'flex-start'}}
                     title = "-"
                     onPress={() => {
-                        this.setState({level: this.state.level - 1});
+                        if (this.props.decreaseVals(this.props.skill, this.state.level)){
+                            this.setState({
+                                level: this.state.level - 1
+                            })
+                        }
                     }}
                 />
                 <Text> {this.props.skill} : {this.state.level} </Text>
                 <Button style={{justifyContent: 'flex-end',}}
                     title = "+"
                     onPress={() => {
-                        this.setState({level: this.state.level + 1});
+                        if (this.props.increaseVals(this.props.skill, this.state.level)){
+                            this.setState({
+                                level: this.state.level + 1
+                            })
+                        }
                     }}
                 />
             </View>
@@ -70,7 +84,114 @@ class DifficultySelector extends Component {
 export default class PlayerGenScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = {text: ''};
+        this.state = {
+            text: '',
+            total: 0,
+            levels: {
+                pilot: 0,
+                fighter: 0,
+                trader: 0,
+                engineer: 0
+            }
+        };
+    }
+
+    increaseVals(key, val) {
+        if (key == "Pilot" && this.state.total < 16) {
+            this.setState({
+                total: this.state.total + 1,
+                levels: {
+                    pilot: this.state.levels.pilot + 1,
+                    fighter: this.state.levels.fighter,
+                    trader: this.state.levels.trader,
+                    engineer: this.state.levels.engineer
+                }
+            })
+            return true;
+        } else if (key == "Fighter" && this.state.total < 16) {
+            this.setState({
+                total: this.state.total + 1,
+                levels: {
+                    pilot: this.state.levels.pilot,
+                    fighter: this.state.levels.fighter + 1,
+                    trader: this.state.levels.trader,
+                    engineer: this.state.levels.engineer
+                }
+            })
+            return true;
+        } else if (key == "Trader" && this.state.total < 16) {
+            this.setState({
+                total: this.state.total + 1,
+                levels: {
+                    pilot: this.state.levels.pilot,
+                    fighter: this.state.levels.fighter,
+                    trader: this.state.levels.trader + 1,
+                    engineer: this.state.levels.engineer
+                }
+            })
+            return true;
+        } else if (key == "Engineer" && this.state.total < 16) {
+            this.setState({
+                total: this.state.total + 1,
+                levels: {
+                    pilot: this.state.levels.pilot,
+                    fighter: this.state.levels.fighter,
+                    trader: this.state.levels.trader,
+                    engineer: this.state.levels.engineer + 1
+                }
+            })
+            return true;
+        }
+        return false;
+    }
+
+    decreaseVals(key, val) {
+        if (key == "Pilot" && val > 0) {
+            this.setState({
+                total: this.state.total - 1,
+                levels: {
+                    pilot: this.state.levels.pilot - 1,
+                    fighter: this.state.levels.fighter,
+                    trader: this.state.levels.trader,
+                    engineer: this.state.levels.engineer
+                }
+            })
+            return true;
+        } else if (key == "Fighter" && val > 0) {
+            this.setState({
+                total: this.state.total - 1,
+                levels: {
+                    pilot: this.state.levels.pilot,
+                    fighter: this.state.levels.fighter - 1,
+                    trader: this.state.levels.trader,
+                    engineer: this.state.levels.engineer
+                }
+            })
+            return true;
+        } else if (key == "Trader" && val > 0) {
+            this.setState({
+                total: this.state.total - 1,
+                levels: {
+                    pilot: this.state.levels.pilot,
+                    fighter: this.state.levels.fighter,
+                    trader: this.state.levels.trader - 1,
+                    engineer: this.state.levels.engineer
+                }
+            })
+            return true;
+        } else if (key == "Engineer" && val > 0) {
+            this.setState({
+                total: this.state.total - 1,
+                levels: {
+                    pilot: this.state.levels.pilot,
+                    fighter: this.state.levels.fighter,
+                    trader: this.state.levels.trader,
+                    engineer: this.state.levels.engineer - 1
+                }
+            })
+            return true;
+        }
+        return false;
     }
 
     render() {
@@ -82,11 +203,19 @@ export default class PlayerGenScreen extends Component {
                     onChangeText={(text) => this.setState({text})}
                 />
 
-                <Text>Player Gen Screen</Text>
-                <SkillComponent skill = "Pilot"/>
-                <SkillComponent skill = "Fighter"/>
-                <SkillComponent skill = "Trader"/>
-                <SkillComponent skill = "Engineer"/>
+                <Text>Points Remaining: {16 - this.state.total}</Text>
+                <SkillComponent skill = "Pilot" level = {this.state.levels.pilot} increaseVals = {(a, b) => this.increaseVals(a, b)} decreaseVals = {(a, b) => this.decreaseVals(a, b)}/>
+                <SkillComponent skill = "Fighter" level = {this.state.levels.fighter} increaseVals = {(a, b) => this.increaseVals(a, b)} decreaseVals = {(a, b) => this.decreaseVals(a, b)}/>
+                <SkillComponent skill = "Trader" level = {this.state.levels.trader} increaseVals = {(a, b) => this.increaseVals(a, b)} decreaseVals = {(a, b) => this.decreaseVals(a, b)}/>
+                <SkillComponent skill = "Engineer" level = {this.state.levels.engineer} increaseVals = {(a, b) => this.increaseVals(a, b)} decreaseVals = {(a, b) => this.decreaseVals(a, b)}/>
+                <Button style={{justifyContent: 'flex-end',}}
+                    title = "start"
+                    onPress={() => {
+                        db.ref('/Skills').update({
+                            value: this.state.levels
+                          });
+                    }}
+                />
                 <DifficultySelector/>
             </View>
         );
