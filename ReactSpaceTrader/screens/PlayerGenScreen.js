@@ -19,6 +19,45 @@ let pilotRef = db.ref('Pilot');
 let traderRef = db.ref('Trader');
 let STARTING_CREDITS = 1000;
 
+let MAX_UNIVERSE_WIDTH = 100;
+let MAX_UNIVERSE_HEIGHT = 100;
+
+var planetNames = ["Acamar", "Adahn", "Aldea", "Andevian", "Antedi", "Balosnee",
+    "Baratas", "Brax", "Bretel", "Calondia", "Campor", "Capelle", "Carzon",
+    "Castor", "Cestus", "Cheron", "Courteney", "Daled", "Damast", "Janus", "Japori"];
+
+var resourceTypes = ["NOSPECIALRESOURCES", "MINERALRICH", "MINERALPOOR", "DESERT", 
+    "LOTSOFWATER", "RICHSOIL", "POORSOIL", "RICHFAUNA", "LIFELESS", "WEIRDMUSHROOMS", 
+    "LOTSOFHERBS", "ARTISTIC", "WARLIKE"];
+
+var techLevels = ["PRE_AGRICULTURE", "AGRICULTURE", "MEDIEVAL", "RENAISSANCE", "EARLY_INDUSTRIAL", "INDUSTRIAL",
+    "POST_INDUSTRIAL", "HI_TECH"];
+
+global.generatedPlanets = [];
+
+global.planetCoordinates = [];
+
+planetNames.forEach(element => {
+    if (Math.floor(Math.random() * 2) === 1) {
+        //order is: Name, ResourceLevel, TechLevel
+        var attributes = [];
+        attributes.push(element);
+        attributes.push(resourceTypes[Math.floor(Math.random() * resourceTypes.length)]);
+        attributes.push(techLevels[Math.floor(Math.random() * techLevels.length)]);
+        generatedPlanets.push(attributes);
+    }
+});
+
+generatedPlanets.forEach(element => {
+    //order is: x, y
+    var coordinates = [];
+    coordinates.push(Math.floor(Math.random() * MAX_UNIVERSE_WIDTH) + 1);
+    coordinates.push(Math.floor(Math.random() * MAX_UNIVERSE_HEIGHT) + 1);
+    planetCoordinates.push(coordinates);
+});
+
+
+
 class SkillComponent extends Component {
     constructor(props){
         super();
@@ -233,6 +272,12 @@ export default class PlayerGenScreen extends Component {
                             });
                             db.ref('/Credits').update({
                                 value: STARTING_CREDITS
+                            });
+                            db.ref('/Planets').update({
+                                curPlanet: generatedPlanets[0],
+                                curCoords: planetCoordinates[0],
+                                planets: generatedPlanets,
+                                coordinates: planetCoordinates
                             });
                             this.props.navigation.navigate('Start');
                         }
