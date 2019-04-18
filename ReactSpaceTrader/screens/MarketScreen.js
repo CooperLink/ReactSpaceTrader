@@ -16,7 +16,7 @@ let creditsRef = (db.ref('Credits'));
 
 
 
-default export class MarketScreen extends Component {
+export default class MarketScreen extends Component {
     constructor(props) {
         super()
         this.state = {
@@ -26,7 +26,7 @@ default export class MarketScreen extends Component {
     render() {
         return (
             <View style={style.marketStyle}>
-                <MarketHeader/>
+                {/* <MarketHeader/> */}
 
 
             </View>
