@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import { db } from '../config';
 
-let creditsRef = (db.ref('Credits'));
+let creditsRef = (db.ref('Credits/value'));
 let numCredits = 0
 creditsRef.on('value', function(snapshot) {
-    credits = snapshot.val()
+    numCredits = parseInt(snapshot.val());
   });
 
 
