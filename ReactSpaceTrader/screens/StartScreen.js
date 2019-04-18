@@ -21,7 +21,12 @@ export default class StartScreen extends Component {
         return (
             <View style = {styles.container}>
                 <Text> PlaceHolder </Text>
-                <Text> Fixed </Text>
+                <Button
+                    title = "Market"
+                    onPress={() => {
+                        this.props.navigation.navigate('Market');
+                    }}
+                />
             </View>
         )
     }

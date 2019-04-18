@@ -17,6 +17,7 @@ let engineerRef = db.ref('Engineer');
 let fighterRef = db.ref('Fighter');
 let pilotRef = db.ref('Pilot');
 let traderRef = db.ref('Trader');
+let STARTING_CREDITS = 1000;
 
 class SkillComponent extends Component {
     constructor(props){
@@ -61,7 +62,6 @@ class DifficultySelector extends Component {
         this.state = {
             currency: "Medium"
         }
-
     }
     render(){
         return(
@@ -227,10 +227,13 @@ export default class PlayerGenScreen extends Component {
                               });
                             db.ref('/Difficulty').update({
                                 value: this.state.difficulty
-                            })
+                            });
                             db.ref('/Player').update({
                                 name: this.state.text
-                            })
+                            });
+                            db.ref('/Credits').update({
+                                value: STARTING_CREDITS
+                            });
                             this.props.navigation.navigate('Start');
                         }
                     }}
