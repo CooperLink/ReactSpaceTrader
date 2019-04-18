@@ -21,10 +21,7 @@ export default class StartScreen extends Component {
         return (
             <View style = {styles.container}>
                 <Text> PlaceHolder </Text>
-                <Button> title = 'Market' </Button>
-                <Button> Fuel Up </Button>
-                <Button> Player Screen</Button>
-                <Button> Travel Screen</Button>
+                <Text> Fixed </Text>
             </View>
         )
     }
