@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+
+} from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -15,6 +21,10 @@ export default class StartScreen extends Component {
         return (
             <View style = {styles.container}>
                 <Text> PlaceHolder </Text>
+                <Button> title = 'Market' </Button>
+                <Button> Fuel Up </Button>
+                <Button> Player Screen</Button>
+                <Button> Travel Screen</Button>
             </View>
         )
     }

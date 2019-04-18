@@ -231,6 +231,7 @@ export default class PlayerGenScreen extends Component {
                             db.ref('/Player').update({
                                 name: this.state.text
                             })
+                            this.props.navigation.navigate('Start');
                         }
                     }}
                 />
