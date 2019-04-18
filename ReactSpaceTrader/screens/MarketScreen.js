@@ -13,6 +13,10 @@ import {
 import { db } from '../config';
 
 let creditsRef = (db.ref('Credits'));
+let numCredits = 0
+creditsRef.on('value', function(snapshot) {
+    credits = snapshot.val()
+  });
 
 
 
@@ -20,13 +24,13 @@ export default class MarketScreen extends Component {
     constructor(props) {
         super()
         this.state = {
-            credits: creditsRef
+            credits: numCredits
         }
     }
     render() {
         return (
             <View style={style.marketStyle}>
-                {/* <MarketHeader/> */}
+                <MarketHeader/>
 
 
             </View>
@@ -40,7 +44,7 @@ class MarketHeader extends Component {
     constructor() {
         super();
         this.state = {
-            credits: creditsRef
+            credits: numCredits
         };
     }
 
