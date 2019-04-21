@@ -17,7 +17,8 @@ const { width, height } = Dimensions.get('window');
 
 let planetRef = (db.ref('Planets/curPlanet'));
 let planetName = "PlaceHolder";
-let planetResource, planetTech;
+let planetResource = 3;
+let planetTech = "HI_TECH";
 planetRef.once('value', function(snapshot) {
     const planet = snapshot.val();
     console.log(snapshot.toJSON());
@@ -57,16 +58,62 @@ export default class MarketScreen extends Component {
                 validItems.push(itemArr);
             }
         }
-        return validItems;
+    // determinePrices(validItems) {
+        var pricedItems = [];
+        // basePrice + IPL * (Planet Tech Level - MTLP) + (basePrice * variance/100)
+        // add base price
+        console.log('VALID ITEMS:')
+        console.log(validItems);
+        for (var item in validItems) {
+            itemArr = validItems[item];
+            var basePrice = itemArr[4];
+            console.log(basePrice);
+            var priceIncrease = itemArr[5];
+            var minTechProduce = itemArr[1];
+            var price = basePrice + priceIncrease * (techLevelDict[planetTech] - minTechProduce);
+            console.log(price + ": " + itemArr[0]);
+            //Might divide below by 100
+            price = price + basePrice * (Math.floor(Math.random() * itemArr[6])/100) ;
+            var pricedItem = [itemArr[0], Math.floor(price)];
+            // The above is Name, Price
+            pricedItems.push(pricedItem);
+        }
+        console.log("Priced Items: ")
+        console.log(pricedItems);
+        return pricedItems;
+        // add IPL * planet tech - MTLP
+
+        // add basePrice * variance / 1
     }
+
 
     render() {
         return (
             <View style={style.marketStyle}>
-                <MarketHeader/>
+                <Text style={style.headerTitle}>
+                    Welcome to {planetName}'s Market
+                </Text>
+                <Text style={style.creditsText}>
+                    Credits : {this.state.credits}
+                </Text>
+                <Text> I DON"T GET THIS either </Text>
                 <ScrollView>
                     {
-                        
+                        this.validItems.map((item) =>
+                            (
+                                <View key = {item[0]}>
+                                    <View style = {style.marketItem}>
+                                        <Text> {item[0]} </Text>
+                                        <Text> ${item[1]} </Text>
+                                        <Text> OWNED: PLACEHOLDER </Text>
+                                        <Text> BUY </Text>
+                                        <Text>Sell</Text>
+                                    </View>
+
+                                    <View style = { style.item_separator }/>
+                                </View>
+
+                            ))
                     }
 
                 </ScrollView>
@@ -97,6 +144,8 @@ class MarketHeader extends Component {
                 <Text style={style.creditsText}>
                     Credits : {this.state.credits}
                 </Text>
+                <Text> I DON"T GET THIS either </Text>
+
             </View>
         );
     };
@@ -115,7 +164,7 @@ class MarketItem extends Component {
             <View style = {style.marketItem}>
                 <Text> PRODUCT </Text>
                 <Text> PRICE </Text>
-                <Text> AMOUNT OWNED: {this.state.owned} </Text>
+                <Text> OWNED: {this.state.owned} </Text>
                 <Text> BUY </Text>
                 <Text>Sell</Text>
             </View>
@@ -157,17 +206,21 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
         height: height,
         width:width,
-        marginTop: 10,
+        marginTop: 15,
     },
     marketItem: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#356',
+        backgroundColor: '#666',
         width : '100%',
-        height: 20,
+        height: 40,
+        alignContent: 'center',
 
     },
-    scroller: {
-
-    }
+    item_separator:
+        {
+            height: 3,
+            width: '100%',
+            backgroundColor: '#fff',
+        }
 });
