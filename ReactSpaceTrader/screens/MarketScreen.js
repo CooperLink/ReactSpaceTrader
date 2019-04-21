@@ -34,6 +34,15 @@ creditsRef.on('value', function(snapshot) {
     numCredits = parseInt(snapshot.val());
   });
 
+let inventoryRef = (db.ref('Player/Inventory'));
+let inventory;
+inventoryRef.on('value', function(snapshot) {
+    inventory = (snapshot.val());
+    console.log(snapshot.toJSON());
+    console.log('Snapshot:Inventory');
+    console.log(inventory);
+});
+
 
 
 export default class MarketScreen extends Component {
@@ -215,6 +224,7 @@ const style = StyleSheet.create({
         width : '100%',
         height: 40,
         alignContent: 'center',
+        alignItems: 'center'
 
     },
     item_separator:

@@ -279,6 +279,21 @@ export default class PlayerGenScreen extends Component {
                                 planets: generatedPlanets,
                                 coordinates: planetCoordinates
                             });
+                            var items = {
+                                Water: 0,
+                                Furs: 0,
+                                Food: 0,
+                                Ore: 0,
+                                Games: 0,
+                                Firearms: 0,
+                                Medicine: 0,
+                                Machines: 0,
+                                Narcotics: 0,
+                                Robots: 0,
+                            };
+                            db.ref('/Player/Inventory').update({
+                                currInven: items
+                            });
                             this.props.navigation.navigate('Start');
                         }
                     }}
