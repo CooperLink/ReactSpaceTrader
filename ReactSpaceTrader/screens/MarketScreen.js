@@ -118,14 +118,17 @@ export default class MarketScreen extends Component {
                                         <Text> BUY </Text>
                                         <Text>Sell</Text>
                                     </View>
-
                                     <View style = { style.item_separator }/>
                                 </View>
-
                             ))
                     }
-
                 </ScrollView>
+                <Button
+                    title = "Back"
+                    onPress={() => {
+                        this.props.navigation.navigate('Start');
+                    }}
+                />
 
 
             </View>
