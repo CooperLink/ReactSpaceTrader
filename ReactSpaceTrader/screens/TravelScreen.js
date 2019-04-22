@@ -14,6 +14,7 @@ import { db } from '../config';
 
 let planetsRef = db.ref('/Planets/planets');
 let curPlanetRef = db.ref('/Planets');
+let coordsRef = db.ref('/Planets/coordinates')
 let curCoordsRef = db.ref('/Planets/curCoords');
 let testRef = db.ref('/Test');
 let planets = "placeholder";
@@ -21,6 +22,16 @@ let planetNames = ["Aldea","Antedi","Brax","Calondia","Capelle","Cheron","Daled"
 planetsRef.once('value', function(snapshot) {
     planets = snapshot.val();
 });
+let coordinates = "placeholder"
+coordsRef.once('value', function(snapshot) {
+    coordinates = snapshot.val();
+});
+let curCoords = "placeholder"
+curCoordsRef.once('value', function(snapshot) {
+    curCoords = snapshot.val();
+});
+
+var valid = [];
 
 class PlanetDisplay extends Component {
     constructor(props){
@@ -40,61 +51,53 @@ class PlanetDisplay extends Component {
 export default class TravelScreen extends Component {
     constructor(props) {
         super()
-        this.validPlanets = this.generateValidPlanets();
+        this.state = {
+            i: 0,
+            sum: 0
+        }
     }
 
-    generateValidPlanets() {
-        var valid = [];
+    componentWillMount() {
         testRef.update({
             visited: "yes"
         })
-        for (var planet in planets) {
-            if (this.getDistance(planet) <= 100) {
+        for (var i = 0; i < planets.length; i++) {
+            testRef.update({
+                list: planets[i]
+            })
+            if (this.getDistance(planets[i]) <= 100) {
                 testRef.update({
-                    passed: "yes"
+                    passed: planets[0]
                 })
-                valid.push(planet);
+                valid.push(planets[i]);
             }
         }
-        return valid;
+        testRef.update({
+            final: valid[0]
+        })
     }
 
     getDistance(item) {
-        testRef.update({
-            distance: "yes"
-        })
+        const that = this
+        var sum = 0;
         var xCoord = 0;
         var yCoord = 0;
-        var xCur = 0;
-        var yCur = 0;
-        curCoordsRef.once('value', function(snapshot) {
-            let temp = snapshot.val();
-            xCur = temp[0];
-            yCur = temp[1];
-        });
+        let xCur = curCoords[0];
+        let yCur = curCoords[1];
         for (var i = 0; i < planetNames.length; i++) {
-            var name = item[0][0]
-            testRef.update({
-                planet: planetNames[i]
-            })
-            if (planetNames[i] == item[0]) {
-                testRef.update({
-                    found: "yes"
+            if (planetNames[i] === item[0]) {
+                var word = "/Test/" + i
+                var ref = db.ref(word);
+                xCoord = coordinates[i][0]
+                yCoord = coordinates[i][1]
+                ref.update({
+                    xCur: xCur,
+                    yCur: yCur,
+                    xCoord: xCoord,
+                    yCoord: yCoord,
+                    distance: Math.sqrt(Math.pow(xCur + xCoord, 2) + Math.pow(yCur + yCoord, 2))
                 })
-                var coords = []
-                specificRef = db.ref('/Planets/coordinates/' + i)
-                specificRef.once('value', function(snapshot) {
-                    coords.push(snapshot.val());
-                });
-                xCoord = coords[0]
-                yCoord = coords[1]
-
-                var sum = Math.sqrt(Math.pow(xCoord + xCur, 2) +
-                Math.pow(yCoord + yCur, 2))
-                testRef.update({
-                    val: sum
-                })
-                return sum;
+                return Math.sqrt(Math.pow(xCur + xCoord, 2) + Math.pow(yCur + yCoord, 2))
             }
         }
     }
@@ -126,7 +129,7 @@ export default class TravelScreen extends Component {
                 />
                 <ScrollView>
                     {
-                        planets.map((item) =>
+                        valid.map((item) =>
                             (
                                 <View key={item[0]} style={styles.planetView}>
                                     <PlanetDisplay name={item[0]} planet={item}/>
