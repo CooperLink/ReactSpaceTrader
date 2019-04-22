@@ -18,7 +18,10 @@ let coordsRef = db.ref('/Planets/coordinates')
 let curCoordsRef = db.ref('/Planets/curCoords');
 let testRef = db.ref('/Test');
 let planets = "placeholder";
-let planetNames = ["Aldea","Antedi","Brax","Calondia","Capelle","Cheron","Daled","Janus","Japori"];
+let planetNames = [];
+db.ref('/Planets/names').once('value', function(snapshot) {
+    planetNames = snapshot.val();
+});
 planetsRef.once('value', function(snapshot) {
     planets = snapshot.val();
 });
@@ -58,6 +61,15 @@ export default class TravelScreen extends Component {
     }
 
     componentWillMount() {
+        planetsRef.once('value', function(snapshot) {
+            planets = snapshot.val();
+        });
+        coordsRef.once('value', function(snapshot) {
+            coordinates = snapshot.val();
+        });
+        curCoordsRef.once('value', function(snapshot) {
+            curCoords = snapshot.val();
+        });
         testRef.update({
             visited: "yes"
         })
@@ -65,7 +77,8 @@ export default class TravelScreen extends Component {
             testRef.update({
                 list: planets[i]
             })
-            if (this.getDistance(planets[i]) <= 100) {
+            var dist = this.getDistance(planets[i])
+            if (dist <= 55 && dist != 0) {
                 testRef.update({
                     passed: planets[0]
                 })
@@ -75,6 +88,10 @@ export default class TravelScreen extends Component {
         testRef.update({
             final: valid[0]
         })
+    }
+
+    componentWillUnmount() {
+        valid = []
     }
 
     getDistance(item) {
@@ -95,9 +112,9 @@ export default class TravelScreen extends Component {
                     yCur: yCur,
                     xCoord: xCoord,
                     yCoord: yCoord,
-                    distance: Math.sqrt(Math.pow(xCur + xCoord, 2) + Math.pow(yCur + yCoord, 2))
+                    distance: Math.sqrt(Math.pow(xCur - xCoord, 2) + Math.pow(yCur - yCoord, 2))
                 })
-                return Math.sqrt(Math.pow(xCur + xCoord, 2) + Math.pow(yCur + yCoord, 2))
+                return Math.sqrt(Math.pow(xCur - xCoord, 2) + Math.pow(yCur - yCoord, 2))
             }
         }
     }
@@ -167,6 +184,6 @@ const styles = StyleSheet.create({
         fontSize: 32,
     },
     bigishText: {
-        fontSize: 22,
+        fontSize: 12,
     }
 });

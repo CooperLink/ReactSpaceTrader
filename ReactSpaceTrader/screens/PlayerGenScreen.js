@@ -26,6 +26,8 @@ var planetNames = ["Acamar", "Adahn", "Aldea", "Andevian", "Antedi", "Balosnee",
     "Baratas", "Brax", "Bretel", "Calondia", "Campor", "Capelle", "Carzon",
     "Castor", "Cestus", "Cheron", "Courteney", "Daled", "Damast", "Janus", "Japori"];
 
+var chosenPlanets = [];
+
 var resourceTypes = ["NOSPECIALRESOURCES", "MINERALRICH", "MINERALPOOR", "DESERT", 
     "LOTSOFWATER", "RICHSOIL", "POORSOIL", "RICHFAUNA", "LIFELESS", "WEIRDMUSHROOMS", 
     "LOTSOFHERBS", "ARTISTIC", "WARLIKE"];
@@ -45,6 +47,7 @@ planetNames.forEach(element => {
         attributes.push(resourceTypes[Math.floor(Math.random() * resourceTypes.length)]);
         attributes.push(techLevels[Math.floor(Math.random() * techLevels.length)]);
         generatedPlanets.push(attributes);
+        chosenPlanets.push(element);
     }
 });
 
@@ -294,6 +297,9 @@ export default class PlayerGenScreen extends Component {
                             db.ref('/Player/Inventory').update({
                                 currInven: items
                             });
+                            db.ref('/Planets').update({
+                                names: chosenPlanets
+                            })
                             this.props.navigation.navigate('Start');
                         }
                     }}
