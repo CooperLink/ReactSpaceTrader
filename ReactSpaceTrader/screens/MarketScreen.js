@@ -120,8 +120,20 @@ export default class MarketScreen extends Component {
                                         <Text> {item[0]} </Text>
                                         <Text> ${item[1]} </Text>
                                         <Text> OWNED: {this.inventory[item[0]]} </Text>
-                                        <Text> BUY </Text>
-                                        <Text>Sell</Text>
+                                        <Button
+                                            title = "Buy"
+                                            onPress={() => {
+                                                this.purchaseItem(item[0], item[1]);
+                                                this.setState({dummy: 1});
+                                            }}
+                                        />
+                                        <Button
+                                            title = "Sell"
+                                            onPress={() => {
+                                                this.sellItem(item[0], item[1]);
+                                                this.setState({dummy: 1});
+                                            }}
+                                        />
                                     </View>
                                     <View style = { style.item_separator }/>
                                 </View>
@@ -131,6 +143,12 @@ export default class MarketScreen extends Component {
                 <Button
                     title = "Back"
                     onPress={() => {
+                        db.ref('/Player/Inventory').update({
+                            currInven: this.inventory
+                        });
+                        db.ref('/Credits').update({
+                            value: this.state.credits
+                        });
                         this.props.navigation.navigate('Start');
                     }}
                 />
@@ -140,6 +158,36 @@ export default class MarketScreen extends Component {
 
 
         );
+
+    }
+    purchaseItem(item, price) {
+        console.log("Buying : " + item);
+        if (this.state.credits >= price && this.hasSpace()) {
+            this.state.credits = this.state.credits - price;
+            this.inventory[item] = this.inventory[item] + 1;
+        }
+    }
+
+    sellItem(item, price) {
+        console.log("Selling : " + item);
+        if (this.inventory[item] != 0) {
+            this.state.credits = this.state.credits + price;
+            this.inventory[item] = this.inventory[item] - 1;
+        }
+    }
+
+    hasSpace() {
+        var sum = 0;
+        for (let item in this.inventory) {
+            number = this.inventory[item];
+            sum = sum + number;
+        }
+        console.log(sum);
+        if (sum < 14) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
