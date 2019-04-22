@@ -19,7 +19,7 @@ let planetRef = (db.ref('Planets/curPlanet'));
 let planetName = "PlaceHolder";
 let planetResource = 3;
 let planetTech = "HI_TECH";
-planetRef.once('value', function(snapshot) {
+planetRef.on('value', function(snapshot) {
     const planet = snapshot.val();
     console.log(snapshot.toJSON());
     planetName = planet["0"];
