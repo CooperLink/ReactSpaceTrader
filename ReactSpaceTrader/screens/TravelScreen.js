@@ -19,18 +19,18 @@ let curCoordsRef = db.ref('/Planets/curCoords');
 let testRef = db.ref('/Test');
 let planets = "placeholder";
 let planetNames = [];
-db.ref('/Planets/names').once('value', function(snapshot) {
+db.ref('/Planets/names').on('value', function(snapshot) {
     planetNames = snapshot.val();
 });
-planetsRef.once('value', function(snapshot) {
+planetsRef.on('value', function(snapshot) {
     planets = snapshot.val();
 });
 let coordinates = "placeholder"
-coordsRef.once('value', function(snapshot) {
+coordsRef.on('value', function(snapshot) {
     coordinates = snapshot.val();
 });
 let curCoords = "placeholder"
-curCoordsRef.once('value', function(snapshot) {
+curCoordsRef.on('value', function(snapshot) {
     curCoords = snapshot.val();
 });
 
