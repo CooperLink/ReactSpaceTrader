@@ -4,10 +4,16 @@ import {
     Text,
     View,
     Button,
+    Alert
 
 } from 'react-native';
 import { db } from '../config';
 
+var fuelRef = db.ref('Ship/hasFuel');
+var hasFuelledUp;
+fuelRef.on('value', function(snapshot) {
+    hasFuelledUp = (snapshot.val());
+});
 let curPlanetRef = db.ref("Planets/curPlanet");
 var name = "placeholder";
 curPlanetRef.once('value', function(snapshot) {
@@ -27,6 +33,9 @@ export default class StartScreen extends Component {
         curPlanetRef.once('value', function(snapshot) {
             planet = snapshot.val();
             name = planet[0];
+        });
+        fuelRef.on('value', function(snapshot) {
+            hasFuel = (snapshot.val() === 'true');
         });
     }
 
@@ -50,7 +59,28 @@ export default class StartScreen extends Component {
                 <Button
                     title = "Travel"
                     onPress={() => {
-                        this.props.navigation.navigate('Travel');
+                        console.log(hasFuelledUp)
+                        if (hasFuelledUp) {
+                            this.props.navigation.navigate('Travel');
+                        } else {
+                            Alert.alert(
+                                'No Fuel!',
+                                'You first have to fuel up to travel',
+                                [
+                                  {text: 'OK'},
+                                ],
+                                {cancelable: false},
+                            );
+                        }
+                    }}
+                />
+                <Button
+                    title = "Fuel Up"
+                    onPress={() => {
+                        hasFuelledUp = true;
+                        db.ref('/Ship').update({
+                            hasFuel: true
+                        });
                     }}
                 />
             </View>
