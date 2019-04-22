@@ -183,7 +183,7 @@ export default class MarketScreen extends Component {
             sum = sum + number;
         }
         console.log(sum);
-        if (sum < 14) {
+        if (sum < 15) {
             return true;
         } else {
             return false;
