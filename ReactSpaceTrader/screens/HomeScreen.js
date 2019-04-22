@@ -40,6 +40,12 @@ export default class HomeScreen extends React.Component {
                         this.props.navigation.navigate('PlayerGen');
                     }}
                 />
+                <Button
+                    title = "Load"
+                    onPress={() => {
+                        this.props.navigation.navigate('Start');
+                    }}
+                />
                 {/*This is entirely for testing purposes to save me time*/}
                 <Button
                     title = "Market"

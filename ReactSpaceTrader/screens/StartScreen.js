@@ -18,6 +18,12 @@ export default class StartScreen extends Component {
                         this.props.navigation.navigate('Market');
                     }}
                 />
+                <Button
+                    title = "Travel"
+                    onPress={() => {
+                        this.props.navigation.navigate('Travel');
+                    }}
+                />
             </View>
         )
     }
