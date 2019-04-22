@@ -36,11 +36,16 @@ creditsRef.on('value', function(snapshot) {
 
 let inventoryRef = (db.ref('Player/Inventory'));
 let inventory;
+let inventorySnap;
 inventoryRef.on('value', function(snapshot) {
-    inventory = (snapshot.val());
+    inventorySnap = (snapshot.val());
     console.log(snapshot.toJSON());
     console.log('Snapshot:Inventory');
+    console.log(inventorySnap);
+    inventory = inventorySnap["currInven"];
     console.log(inventory);
+
+
 });
 
 
@@ -49,6 +54,7 @@ export default class MarketScreen extends Component {
     constructor(props) {
         super()
         this.validItems = this.generateValidItems();
+        this.inventory = inventory;
         this.state = {
             credits: numCredits
         }
@@ -56,10 +62,9 @@ export default class MarketScreen extends Component {
 
     generateValidItems() {
         var validItems = [];
-        console.log(planetTech);
+
         var planetTechNumber = techLevelDict[planetTech];
-        console.log('Check planet tech');
-        console.log(planetTechNumber);
+
         for(var item in items) {
             var itemArr = items[item];
             if (itemArr[1] <= planetTechNumber) {
@@ -71,24 +76,23 @@ export default class MarketScreen extends Component {
         var pricedItems = [];
         // basePrice + IPL * (Planet Tech Level - MTLP) + (basePrice * variance/100)
         // add base price
-        console.log('VALID ITEMS:')
-        console.log(validItems);
+
         for (var item in validItems) {
             itemArr = validItems[item];
             var basePrice = itemArr[4];
-            console.log(basePrice);
+
             var priceIncrease = itemArr[5];
             var minTechProduce = itemArr[1];
             var price = basePrice + priceIncrease * (techLevelDict[planetTech] - minTechProduce);
-            console.log(price + ": " + itemArr[0]);
+
             //Might divide below by 100
             price = price + basePrice * (Math.floor(Math.random() * itemArr[6])/100) ;
             var pricedItem = [itemArr[0], Math.floor(price)];
             // The above is Name, Price
             pricedItems.push(pricedItem);
         }
-        console.log("Priced Items: ")
-        console.log(pricedItems);
+
+
         return pricedItems;
         // add IPL * planet tech - MTLP
 
@@ -110,11 +114,12 @@ export default class MarketScreen extends Component {
                     {
                         this.validItems.map((item) =>
                             (
+
                                 <View key = {item[0]}>
                                     <View style = {style.marketItem}>
                                         <Text> {item[0]} </Text>
                                         <Text> ${item[1]} </Text>
-                                        <Text> OWNED: PLACEHOLDER </Text>
+                                        <Text> OWNED: {this.inventory[item[0]]} </Text>
                                         <Text> BUY </Text>
                                         <Text>Sell</Text>
                                     </View>
