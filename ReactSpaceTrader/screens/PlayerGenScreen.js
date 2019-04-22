@@ -297,6 +297,9 @@ export default class PlayerGenScreen extends Component {
                             db.ref('/Player/Inventory').update({
                                 currInven: items
                             });
+                            db.ref('/Ship').update({
+                                hasFuel: true
+                            });
                             db.ref('/Planets').update({
                                 names: chosenPlanets
                             })

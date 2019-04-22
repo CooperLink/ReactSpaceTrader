@@ -8,7 +8,8 @@ import {
     Platform,
     ScrollView,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    Alert
 } from 'react-native';
 import { db } from '../config';
 
@@ -135,6 +136,38 @@ export default class TravelScreen extends Component {
         }
     }
 
+    randomEvent(item) {
+
+        if (Math.floor(Math.random() * 3) === 1) {
+            var creditChange = 75;
+            var alertHeader = "You found a bag of Credits!"
+            var alertSubHeader = creditChange + " Credits added to balance"
+            if (Math.floor(Math.random() * 2) === 1) {
+                alertHeader = "You were attacked by a Space APE!"
+                alertSubHeader = creditChange + " were stolen from your balance"
+                creditChange *= -1;
+            }
+            let creditsRef = (db.ref('Credits/value'));
+            let numCredits = 0;
+            creditsRef.on('value', function(snapshot) {
+                numCredits = parseInt(snapshot.val());
+            });
+            db.ref('/Credits').update({
+                value: (numCredits + creditChange)
+            });
+            Alert.alert(
+                alertHeader,
+                alertSubHeader,
+                [
+                  {text: 'OK', onPress: () => this.props.navigation.navigate('Start')},
+                ],
+                {cancelable: false},
+            );
+        } else {
+            this.props.navigation.navigate('Start');
+        }
+    }
+
     render() {
         return (
             <View>
@@ -156,8 +189,11 @@ export default class TravelScreen extends Component {
                                             curPlanetRef.update({
                                                 curPlanet: item
                                             })
+                                            db.ref('/Ship').update({
+                                                hasFuel: false
+                                            });
                                             this.updateCoords(item);
-                                            this.props.navigation.navigate('Start');
+                                            this.randomEvent();
                                         }}
                                     />
                                 </View>
