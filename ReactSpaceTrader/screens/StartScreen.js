@@ -4,8 +4,8 @@ import {
     Text,
     View,
     Button,
-    Alert
-
+    Alert,
+    TextInput
 } from 'react-native';
 import { db } from '../config';
 
@@ -22,11 +22,12 @@ curPlanetRef.once('value', function(snapshot) {
 });
 
 export default class StartScreen extends Component {
-    componentWillMount() {
-        curPlanetRef.once('value', function(snapshot) {
-            planet = snapshot.val();
-            name = planet[0];
-        });
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            hasFuel: hasFuelledUp 
+        };
     }
 
     componentDidUpdate() {
@@ -59,7 +60,7 @@ export default class StartScreen extends Component {
                 <Button
                     title = "Travel"
                     onPress={() => {
-                        console.log(hasFuelledUp)
+                        console.log(this.state.hasFuel)
                         if (hasFuelledUp) {
                             this.props.navigation.navigate('Travel');
                         } else {
@@ -78,11 +79,15 @@ export default class StartScreen extends Component {
                     title = "Fuel Up"
                     onPress={() => {
                         hasFuelledUp = true;
+                        this.setState({
+                            hasFuel: hasFuelledUp
+                        })
                         db.ref('/Ship').update({
                             hasFuel: true
                         });
                     }}
                 />
+                <Text>Has Fuel Remaining: {this.state.hasFuel.toString()}</Text>
             </View>
         )
     }
